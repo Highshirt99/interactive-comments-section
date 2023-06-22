@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { addComment } from "@redux/userSlice ";
+import { addComment } from "@redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 
@@ -13,7 +13,13 @@ const UserCommentInput = () => {
     e.preventDefault();
     // data.comments.replies.push(userReply)
     if (userInput !== "") {
-      dispatch(addComment({ content: userInput, score: 0, id: Math.random() }));
+      dispatch(
+        addComment({
+          content: userInput,
+          score: Math.round(Math.random() * 20),
+          id: Math.random() * 10000000,
+        })
+      );
     }
 
     const userComment = document.getElementById("userComment");
@@ -25,7 +31,7 @@ const UserCommentInput = () => {
       <div className="flex flex-col gap-2 lg:justify-between lg:flex-row">
         <div className="flex gap-2">
           <Image
-            src="/images/avatars/image-ramsesmiron.png "
+            src="/images/avatars/image-juliusomo.png"
             width={30}
             height={30}
             alt="You"

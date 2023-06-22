@@ -1,6 +1,5 @@
 {
   "currentUser": {
-    "comments": [],
     "image": { 
       "png": "/images/avatars/image-juliusomo.png",
       "webp": "./images/avatars/image-juliusomo.webp"
@@ -34,23 +33,11 @@
             "webp": "/images/avatars/image-amyrobson.png"
           },
           "username": "jackie"
-        }
-      },
-
-      {
-        "id": 24,
-        "content": "Hi",
-        "createdAt": "2 days ago",
-        "score": 2,
-        "replyingTo": "amyrobson",
-        "user": {
-          "image": { 
-            "png": "/images/avatars/image-maxblagun.png",
-            "webp": "/images/avatars/image-maxblagun.png"
-          },
-          "username": "alexandra"
-        }
+        } ,
+        "replies2": []
       }
+
+
     ]
       },
     {
@@ -78,22 +65,26 @@
               "webp": "./images/avatars/image-ramsesmiron.webp"
             },
             "username": "ramsesmiron"
-          }
+          },
+
+          "replies2": []
         },
         {
           "id": 4,
           "content": "I couldn't agree more with this. Everything moves so fast and it always seems like everyone knows the newest library/framework. But the fundamentals are what stay constant.",
           "createdAt": "2 days ago",
           "score": 2,
-          "replyingTo": "maxblagun",
+          "replyingTo": "ramsesmiron",
           "user": {
             "image": { 
               "png": "/images/avatars/image-maxblagun.png",
               "webp": "/images/avatars/image-maxblagun.png"
             },
             "username": "josh"
-          }
+          } ,
+          "replies2": []
         }
+       
       ]
     }
   ]

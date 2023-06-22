@@ -1,17 +1,19 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import data from "../data.json";
 import Replies from "./Replies";
 import Image from "next/image";
 import UserReply from "./UserReply";
-import UserInput from "./UserReply";
+import UserReplyInput from "./UserReplyInput";
 import UserComments from "./UserComments";
-
+import { downVoteOtherComment, upVoteOtherComment } from "@redux/userSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Comments = () => {
-  const [votes, setVotes] = useState(null);
+  const dispatch = useDispatch();
   const [hoverActive, setHoverActive] = useState(false);
-  const [showReplyBox, setShowReplyBox] = useState(false);
+  const [showReplyBox, setShowReplyBox] = useState(null);
+  const data = useSelector((state) => state.data.userData);
+  const [replyId, setReplyId] = useState(null);
 
   // useEffect(() => {
   //   data.comments.forEach((comment) => {
@@ -19,20 +21,15 @@ const Comments = () => {
   //     console.log(votes)
   //   })
   // })
-  const incrementScore = (itemScore) => {
-    itemScore += 1;
-    console.log(itemScore);
-  };
-  const decrementScore = (itemScore) => {
-    itemScore -= 1;
-    console.log(itemScore);
-  };
+
+  const userComment = useSelector((state) => state.data.userComments);
+  // console.log(replyId);
 
   return (
     <div>
-      {data.comments.map((item) => (
+      {data.comments.map((item, index) => (
         <div key={item.id}>
-          <div className="relative h-auto bg-white rounded-md w-full lg:w-[600px] p-4 mb-5">
+          <div className="relative h-auto bg-white rounded-md w-full lg:w-[600px] p-4 mb-5 ">
             <div className="flex items-center gap-3 mb-1 lg:ml-5">
               <Image
                 src={item.user.image.png}
@@ -46,10 +43,10 @@ const Comments = () => {
               </span>
 
               <div
-                onClick={() => setShowReplyBox(true)}
+                onClick={() => setShowReplyBox(item.id)}
                 onMouseOver={() => setHoverActive(true)}
                 onMouseLeave={() => setHoverActive(false)}
-                className="absolute   flex items-center justify-center gap-2 cursor-pointer  bottom-2 lg:bottom-[73%] right-[55px]"
+                className="absolute  flex items-center justify-center gap-2 cursor-pointer  bottom-2 lg:bottom-[73%] right-[55px]"
               >
                 <svg width="14" height="13" xmlns="http://www.w3.org/2000/svg">
                   <path
@@ -74,7 +71,7 @@ const Comments = () => {
                 width="11"
                 height="11"
                 xmlns="http://www.w3.org/2000/svg"
-                // onClick={() => incrementScore(item.score)}
+                onClick={() => dispatch(upVoteOtherComment(item.id))}
                 className="self-center cursor-pointer "
               >
                 <path
@@ -92,7 +89,7 @@ const Comments = () => {
                 width="11"
                 height="3"
                 xmlns="http://www.w3.org/2000/svg"
-                // onClick={() => decrementScore(item.score)}
+                onClick={() => dispatch(downVoteOtherComment(item.id))}
               >
                 <path
                   className="transition-all duration-300 delay-100 hover:fill-moderateBlue"
@@ -102,28 +99,58 @@ const Comments = () => {
               </svg>
             </div>
 
-            <p className="text-[14px] lg:ml-6 mb-12">{item.content}</p>
+            <p className="text-[13px] lg:ml-6 mb-12">{item.content}</p>
           </div>
 
           <div className="border-l border-l-gray-300">
-            {item.replies.map((reply) => (
-              <div key={reply.id}>
-                <Replies
-                  replies={reply.content}
-                  replyingTo={reply.replyingTo}
-                  score={reply.score}
-                  username={reply.user.username}
-                  imgsrc={reply.user.image.png}
-                  time={reply.createdAt}
-                />
-              </div>
-            ))}
-            {showReplyBox && <UserInput />}
-            <UserReply replyingTo={item.user.username} />
+            {item.replies.map((reply, index) =>
+              reply.currentUser ? (
+                <UserReply key={index} reply={reply} commentId={item.id} />
+              ) : (
+                <div key={reply.id}>
+                  <Replies
+                    commentId={item.id}
+                    reply={reply.content}
+                    replyingTo={reply.replyingTo}
+                    score={reply.score}
+                    username={reply.user.username}
+                    imgsrc={reply.user.image.png}
+                    time={reply.createdAt}
+                    id={reply.id}
+                    replies={item.replies}
+                    index={index}
+                    setReplyId={setReplyId}
+                  />
+                </div>
+              )
+            )}
+            {item.replies.map((r) =>
+              r.replies2?.map((reply, index) => (
+                <UserReply key={index} reply={reply} commentId={item.id} />
+              ))
+            )}
+
+            {item.replies.forEach((i) => {
+              // console.log(i.replies2)
+              // i.id === replyId &&
+              //   i.replies2?.map((reply, index) => (
+              //     <UserReply key={index} reply={reply} commentId={item.id} />
+              //   ));
+            })}
+
+            {showReplyBox === item.id && (
+              <UserReplyInput
+                commentId={item.id}
+                setShowReplyBox={setShowReplyBox}
+              />
+            )}
           </div>
         </div>
       ))}
-      <UserComments />
+
+      {userComment?.map((comment, index) => (
+        <UserComments key={index} comment={comment} index={index} />
+      ))}
     </div>
   );
 };

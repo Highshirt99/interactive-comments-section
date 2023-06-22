@@ -1,20 +1,25 @@
 import React, { useState } from "react";
-import Replies from "./Replies";
 import Image from "next/image";
 import DeleteBox from "./DeleteBox";
-import data from "../data.json";
+import { useDispatch, useSelector } from "react-redux";
+import { downVoteReply, editReply, upVoteReply } from "@redux/userSlice";
 
-const UserReply = ({ replyingTo }) => {
+const UserReply = ({ reply, commentId}) => {
   const [deleteHoverActive, setDeleteHoverActive] = useState(false);
   const [editHoverActive, setEditHoverActive] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
   const [showDeleteBox, setShowDeleteBox] = useState(false);
-  const [userReply, setUserReply] = useState("This is my temporary reply.");
-  const date = new Date();
-  const hours = date.getHours();
-  const mins = date.getMinutes();
-  const minutes = mins < 10 ? "0" + mins : mins;
+  const [edited, setEdited] = useState(reply.content);
+  
+  // const date = new Date();
+  // const hours = date.getHours();
+  // const mins = date.getMinutes();
+  // const minutes = mins < 10 ? "0" + mins : mins;
+
+  const data = useSelector((state) => state.data.userData);
+
+  const dispatch = useDispatch();
 
   const handleDelete = () => {
     setDeleteConfirmed(true);
@@ -23,6 +28,16 @@ const UserReply = ({ replyingTo }) => {
   const handleCancel = () => {
     setDeleteConfirmed(false);
     setShowDeleteBox(false);
+  };
+
+  const handleEdit = (id, commentId) => {
+    dispatch(
+      editReply({
+        replyId: id,
+        content: edited,
+        commentId,
+      })
+    );
   };
 
   return (
@@ -34,12 +49,12 @@ const UserReply = ({ replyingTo }) => {
       >
         <div>
           <div className="text-[18px]  rounded-[3px] text-moderateBlue absolute lg:left-2 lg:top-5 bottom-2  lg:ml-0  bg-lightGray lg:w-[20px] w-[55px] flex lg:flex-col justify-center items-centers gap-2 lg:h-[60px] h-6">
-
             <svg
               width="11"
               height="11"
               xmlns="http://www.w3.org/2000/svg"
               className="self-center cursor-pointer "
+              onClick={() => dispatch(upVoteReply(reply.id))}
             >
               <path
                 className="transition-all duration-300 delay-100 hover:fill-moderateBlue"
@@ -47,12 +62,15 @@ const UserReply = ({ replyingTo }) => {
                 fill="#C5C6EF"
               />
             </svg>
-            <span className="text-[10px] font-[700] self-center">2</span>
+            <span className="text-[10px] font-[700] self-center">
+              {reply.score}
+            </span>
             <svg
               className="self-center cursor-pointer "
               width="11"
               height="3"
               xmlns="http://www.w3.org/2000/svg"
+              onClick={() => dispatch(downVoteReply(reply.id))}
             >
               <path
                 className="transition-all duration-300 delay-100 hover:fill-moderateBlue"
@@ -68,14 +86,12 @@ const UserReply = ({ replyingTo }) => {
               height={30}
               alt="You"
             />
-            <p className="font-[700]">{data.currentUser.username}</p>
+            <p className="font-[700] text-[13px]">{data.currentUser.username}</p>
             <p className="p-1 text-white bg-moderateBlue w-[40px] text-center rounded-sm text-[10px]">
               You
             </p>
-            <span className="text-gray-500">
-              {hours}:{minutes}
-            </span>
-            <div className="absolute flex items-center gap-3 ml-20 lg:static bottom-1 right-2 ">
+            <span className="text-gray-500 text-[13px]">{reply.createdAt}</span>
+            <div className="absolute flex items-center text-[13px] gap-3 ml-20 lg:static bottom-3 right-2 ">
               <div
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={() => setShowDeleteBox(true)}
@@ -91,7 +107,11 @@ const UserReply = ({ replyingTo }) => {
                     } transition-all duration-300 delay-100`}
                   />
                 </svg>
-                <span className= {`${deleteHoverActive && "text-paleRed"} text-softRed font-[500]  transition-all duration-300 delay-100`}>
+                <span
+                  className={`${
+                    deleteHoverActive && "text-paleRed"
+                  } text-softRed font-[500]  transition-all duration-300 delay-100`}
+                >
                   Delete
                 </span>
               </div>
@@ -110,29 +130,36 @@ const UserReply = ({ replyingTo }) => {
                     } transition-all duration-300 delay-100`}
                   />
                 </svg>
-                <span className={`${editHoverActive && "text-lightGrayishBlue" } text-moderateBlue font-[500]  transition-all duration-300 delay-100`}>
+                <span
+                  className={`${
+                    editHoverActive && "text-lightGrayishBlue"
+                  } text-moderateBlue font-[500]  transition-all duration-300 delay-100`}
+                >
                   Edit
                 </span>
               </div>
             </div>
           </div>
-          <div className="mb-12 lg:ml-5">
+          <div className="mb-12 lg:ml-5 text-[13px]">
             <p className={`${showEdit ? "hidden" : "block"} `}>
-              <span className="text-moderateBlue">@{replyingTo}</span>,
-              {userReply}
+              <span className="text-moderateBlue">@{reply.replyingTo}</span>
+              ,&nbsp;
+              {reply.content}
             </p>
             {showEdit && (
               <div className="mt-10 mb-20">
                 <textarea
                   name="reply"
-                  value={userReply}
-                  onChange={(e) => setUserReply(e.target.value)}
+                  value={edited}
+                  onChange={(e) => setEdited(e.target.value)}
                   className=" min-h-[50px]  lg:w-[400px] w-full mb-2 p-1 outline-none lg:min-h-[100px]  bg-none border border-moderateBlue  text-darkBlue rounded-md "
                 />
 
                 <br />
                 <button
-                  onClick={() => setShowEdit(false)}
+                  onClick={() =>
+                    setShowEdit(false) & handleEdit(reply.id, commentId)
+                  }
                   className="p-1 w-[80px] absolute lg:right-[61px] right-4 mb-6 text-white rounded-md cursor-pointer bg-moderateBlue hover:bg-lightGrayishBlue"
                 >
                   Update
