@@ -10,11 +10,11 @@ const UserReplyInput = ({ commentId, setShowReplyBox, replyId, reply}) => {
   const mins = date.getMinutes();
   const minutes = mins < 10 ? "0" + mins : mins;
 
-  // const data = useSelector((state) => state.data.userData);
+
 
   const [userInput, setUserInput] = useState("");
   const sendReply = (commentId, replyId) => {
-    // data.comments.replies.push(userReply)
+
     if (reply) {
       dispatch(
         addReply({

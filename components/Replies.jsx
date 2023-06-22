@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import UserReplyInput from "./UserReplyInput";
-import UserReply from "./UserReply";
 import { useDispatch } from "react-redux";
 import { upVoteReply, downVoteReply } from "@redux/userSlice";
 
@@ -15,14 +14,12 @@ const Replies = ({
   time,
   imgsrc,
   id,
-  replies,
-  index,
   setReplyId,
 }) => {
   const dispatch = useDispatch();
   const [hoverActive, setHoverActive] = useState(false);
   const [showReplyBox, setShowReplyBox] = useState(false);
-  // const [replyId, setReplyId] = useState(null);
+
 
   return (
     <div className=" h-fit">
@@ -102,18 +99,6 @@ const Replies = ({
         />
       )}
 
-      {/* {replies.forEach((reply, index) => {
-        if (replyId === reply.id) {
-          reply.replies2?.map((item) => (
-            <UserReply
-              key={index}
-              reply={item}
-              commentId={commentId}
-              replyId={id}
-            />
-          ));
-        }
-      })} */}
     </div>
   );
 };

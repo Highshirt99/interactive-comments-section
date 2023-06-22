@@ -15,19 +15,11 @@ const Comments = () => {
   const data = useSelector((state) => state.data.userData);
   const [replyId, setReplyId] = useState(null);
 
-  // useEffect(() => {
-  //   data.comments.forEach((comment) => {
-  //     setVotes(comment.score)
-  //     console.log(votes)
-  //   })
-  // })
-
   const userComment = useSelector((state) => state.data.userComments);
-  // console.log(replyId);
 
   return (
     <div>
-      {data.comments.map((item, index) => (
+      {data.comments.map((item) => (
         <div key={item.id}>
           <div className="relative h-auto bg-white rounded-md w-full lg:w-[600px] p-4 mb-5 ">
             <div className="flex items-center gap-3 mb-1 lg:ml-5">
@@ -121,22 +113,12 @@ const Comments = () => {
                     index={index}
                     setReplyId={setReplyId}
                   />
+                  {reply.replies2?.map((item2) => (
+                    <UserReply key={index} reply={item2} replyId={replyId} commentId={item.id} replyId2 = {item2.id} reply2 />
+                  ))}
                 </div>
               )
             )}
-            {item.replies.map((r) =>
-              r.replies2?.map((reply, index) => (
-                <UserReply key={index} reply={reply} commentId={item.id} />
-              ))
-            )}
-
-            {item.replies.forEach((i) => {
-              // console.log(i.replies2)
-              // i.id === replyId &&
-              //   i.replies2?.map((reply, index) => (
-              //     <UserReply key={index} reply={reply} commentId={item.id} />
-              //   ));
-            })}
 
             {showReplyBox === item.id && (
               <UserReplyInput

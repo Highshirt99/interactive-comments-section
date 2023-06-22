@@ -2,20 +2,15 @@ import React, { useState } from "react";
 import Image from "next/image";
 import DeleteBox from "./DeleteBox";
 import { useDispatch, useSelector } from "react-redux";
-import { downVoteReply, editReply, upVoteReply } from "@redux/userSlice";
+import { downVoteReply, downVoteReply2, editReply, editReply2, upVoteReply, upVoteReply2 } from "@redux/userSlice";
 
-const UserReply = ({ reply, commentId}) => {
+const UserReply = ({ reply, commentId, replyId2, reply2 }) => {
   const [deleteHoverActive, setDeleteHoverActive] = useState(false);
   const [editHoverActive, setEditHoverActive] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [deleteConfirmed, setDeleteConfirmed] = useState(false);
   const [showDeleteBox, setShowDeleteBox] = useState(false);
   const [edited, setEdited] = useState(reply.content);
-  
-  // const date = new Date();
-  // const hours = date.getHours();
-  // const mins = date.getMinutes();
-  // const minutes = mins < 10 ? "0" + mins : mins;
 
   const data = useSelector((state) => state.data.userData);
 
@@ -30,15 +25,46 @@ const UserReply = ({ reply, commentId}) => {
     setShowDeleteBox(false);
   };
 
-  const handleEdit = (id, commentId) => {
-    dispatch(
+  const handleEdit = (id, commentId, replyId2) => {
+    if(reply2){
+      dispatch(editReply2({
+        replyId: id,
+        content: edited,
+        replyId2,
+        commentId
+      }))
+    }
+    
+   else{dispatch(
       editReply({
         replyId: id,
         content: edited,
         commentId,
       })
     );
+   }
   };
+
+  const upVote = (id) => {
+    if(reply2){
+      dispatch(upVoteReply2(id))
+    }
+
+    else{
+      dispatch(upVoteReply(id))
+    }
+  }
+  const downVote = (id) => {
+    if(reply2){
+      dispatch(downVoteReply2(id))
+    }
+
+    else{
+      dispatch(downVoteReply(id))
+    }
+  }
+
+
 
   return (
     <div>
@@ -54,7 +80,7 @@ const UserReply = ({ reply, commentId}) => {
               height="11"
               xmlns="http://www.w3.org/2000/svg"
               className="self-center cursor-pointer "
-              onClick={() => dispatch(upVoteReply(reply.id))}
+              onClick={() => upVote(reply.id)}
             >
               <path
                 className="transition-all duration-300 delay-100 hover:fill-moderateBlue"
@@ -70,7 +96,7 @@ const UserReply = ({ reply, commentId}) => {
               width="11"
               height="3"
               xmlns="http://www.w3.org/2000/svg"
-              onClick={() => dispatch(downVoteReply(reply.id))}
+              onClick={() => downVote(reply.id)}
             >
               <path
                 className="transition-all duration-300 delay-100 hover:fill-moderateBlue"
@@ -86,7 +112,9 @@ const UserReply = ({ reply, commentId}) => {
               height={30}
               alt="You"
             />
-            <p className="font-[700] text-[13px]">{data.currentUser.username}</p>
+            <p className="font-[700] text-[13px]">
+              {data.currentUser.username}
+            </p>
             <p className="p-1 text-white bg-moderateBlue w-[40px] text-center rounded-sm text-[10px]">
               You
             </p>
@@ -158,7 +186,7 @@ const UserReply = ({ reply, commentId}) => {
                 <br />
                 <button
                   onClick={() =>
-                    setShowEdit(false) & handleEdit(reply.id, commentId)
+                    setShowEdit(false) & handleEdit(reply.id, commentId, replyId2)
                   }
                   className="p-1 w-[80px] absolute lg:right-[61px] right-4 mb-6 text-white rounded-md cursor-pointer bg-moderateBlue hover:bg-lightGrayishBlue"
                 >

@@ -4,7 +4,6 @@ import data from "../data.json";
 const initialState = {
   userData: data,
   userComments: [],
-  replyId: null,
 };
 
 export const userSlice = createSlice({
@@ -83,6 +82,31 @@ export const userSlice = createSlice({
         });
       });
     },
+    upVoteReply2: (state, action) => {
+      state.userData.comments.forEach((comment) => {
+        comment.replies.forEach((reply) => {
+          reply.replies2.forEach((reply2) => {
+            if (reply2.id === action.payload) {
+              reply2.score += 1;
+            }
+          })
+         
+        });
+      });
+    },
+
+    downVoteReply2: (state, action) => {
+      state.userData.comments.forEach((comment) => {
+        comment.replies.forEach((reply) => {
+          reply.replies2.forEach((reply2) => {
+            if (reply2.id === action.payload) {
+              reply2.score -= 1;
+            }
+          })
+         
+        });
+      });
+    },
 
     addReply: (state, action) => {
       const score = Math.round(Math.random() * 20);
@@ -120,18 +144,19 @@ export const userSlice = createSlice({
         } else if (action.payload.replyId) {
           comment.replies.forEach((item) => {
             replyingTo = item.user.username;
-            // state.replyId = item.id;
-            item.replies2.push({
-              id,
-              content,
-              score,
-              user,
-              replyingTo,
-              createdAt,
-              currentUser: true,
-              replies: [],
-            });
-       
+
+            if (item.id === action.payload.replyId) {
+              item.replies2.push({
+                id,
+                content,
+                score,
+                user,
+                replyingTo,
+                createdAt,
+                currentUser: true,
+                replies: [],
+              });
+            }
           });
         }
       });
@@ -149,38 +174,19 @@ export const userSlice = createSlice({
       });
     },
 
-    // replyReply(state, action) {
-    //   const score = Math.round(Math.random() * 20);
-    //   const id = Math.random() * 10000000;
-    //   const content = action.payload.content;
-    //   const createdAt = action.payload.createdAt;
-    //   let replyingTo;
-
-    //   const user = {
-    //     username: state.userData.currentUser.username,
-    //     image: {
-    //       png: state.userData.currentUser.image.png,
-    //       webp: state.userData.currentUser.image.webp,
-    //     },
-    //   };
-    //   state.userData.comments.forEach((comment) => {
-    //     if (comment.id === action.payload.commentId) {
-    //       comment.replies.forEach((item) => {
-    //         replyingTo = item.replyingTo;
-    //       });
-
-    //       comment.replies.replies.push({
-    //         id,
-    //         content,
-    //         score,
-    //         user,
-    //         replyingTo,
-    //         createdAt,
-    //         currentUser: true,
-    //       });
-    //     }
-    //   });
-    // },
+    editReply2(state, action) {
+      state.userData.comments.forEach((comment) => {
+        if (comment.id === action.payload.commentId) {
+          comment.replies.forEach((reply) => {
+            reply.replies2?.forEach((reply2) => {
+              if (reply2.id === action.payload.replyId2) {
+                reply2.content = action.payload.content;
+              }
+            });
+          });
+        }
+      });
+    },
   },
 });
 
@@ -200,6 +206,9 @@ export const {
   addReply,
   editReply,
   replyReply,
+  editReply2,
+  upVoteReply2,
+  downVoteReply2
 } = userSlice.actions;
 
 export default userSlice.reducer;
