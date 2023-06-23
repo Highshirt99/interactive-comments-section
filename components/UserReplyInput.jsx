@@ -15,24 +15,29 @@ const UserReplyInput = ({ commentId, setShowReplyBox, replyId, reply}) => {
   const [userInput, setUserInput] = useState("");
   const sendReply = (commentId, replyId) => {
 
-    if (reply) {
-      dispatch(
-        addReply({
-          content: userInput,
-          createdAt: `${hours}:${minutes}`,
-          replyId
-        })
-      );
-      // console.log(replyId)
-    } else {
-      dispatch(
-        addReply({
-          commentId,
-          content: userInput,
-          createdAt: `${hours}:${minutes}`,
-        })
-      );
+    if(document.getElementById("reply").value != ""){
+
+      if (reply) {
+        dispatch(
+          addReply({
+            content: userInput,
+            createdAt: `${hours}:${minutes}`,
+            replyId
+          })
+        );
+        // console.log(replyId)
+      } else {
+        dispatch(
+          addReply({
+            commentId,
+            content: userInput,
+            createdAt: `${hours}:${minutes}`,
+          })
+        );
+      }
+
     }
+
 
     setShowReplyBox(null);
     
@@ -51,6 +56,8 @@ const UserReplyInput = ({ commentId, setShowReplyBox, replyId, reply}) => {
           />
           <textarea
             onChange={(e) => setUserInput(e.target.value)}
+            name = "reply"
+            id = "reply"
             className=" min-h-[50px] h-auto lg:w-[350px] w-full mb-2 p-1 outline-none lg:min-h-[100px]  bg-none border border-moderateBlue  text-darkBlue rounded-md "
           />
         </div>
