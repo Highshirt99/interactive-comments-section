@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import Image from "next/image";
 import DeleteBox from "./DeleteBox";
 import { useDispatch, useSelector } from "react-redux";
-import { downVoteReply, downVoteReply2, editReply, editReply2, upVoteReply, upVoteReply2 } from "@redux/userSlice";
+import {
+  downVoteReply,
+  downVoteReply2,
+  editReply,
+  editReply2,
+  upVoteReply,
+  upVoteReply2,
+} from "@redux/userSlice";
 
 const UserReply = ({ reply, commentId, replyId2, reply2 }) => {
   const [deleteHoverActive, setDeleteHoverActive] = useState(false);
@@ -26,45 +33,40 @@ const UserReply = ({ reply, commentId, replyId2, reply2 }) => {
   };
 
   const handleEdit = (id, commentId, replyId2) => {
-    if(reply2){
-      dispatch(editReply2({
-        replyId: id,
-        content: edited,
-        replyId2,
-        commentId
-      }))
+    if (reply2) {
+      dispatch(
+        editReply2({
+          replyId: id,
+          content: edited,
+          replyId2,
+          commentId,
+        })
+      );
+    } else {
+      dispatch(
+        editReply({
+          replyId: id,
+          content: edited,
+          commentId,
+        })
+      );
     }
-    
-   else{dispatch(
-      editReply({
-        replyId: id,
-        content: edited,
-        commentId,
-      })
-    );
-   }
   };
 
   const upVote = (id) => {
-    if(reply2){
-      dispatch(upVoteReply2(id))
+    if (reply2) {
+      dispatch(upVoteReply2(id));
+    } else {
+      dispatch(upVoteReply(id));
     }
-
-    else{
-      dispatch(upVoteReply(id))
-    }
-  }
+  };
   const downVote = (id) => {
-    if(reply2){
-      dispatch(downVoteReply2(id))
+    if (reply2) {
+      dispatch(downVoteReply2(id));
+    } else {
+      dispatch(downVoteReply(id));
     }
-
-    else{
-      dispatch(downVoteReply(id))
-    }
-  }
-
-
+  };
 
   return (
     <div>
@@ -105,6 +107,7 @@ const UserReply = ({ reply, commentId, replyId2, reply2 }) => {
               />
             </svg>
           </div>
+
           <div className="flex items-center gap-3 mb-1 lg:ml-5">
             <Image
               src={data.currentUser.image.png}
@@ -119,6 +122,7 @@ const UserReply = ({ reply, commentId, replyId2, reply2 }) => {
               You
             </p>
             <span className="text-gray-500 text-[13px]">{reply.createdAt}</span>
+
             <div className="absolute flex items-center text-[13px] gap-3 ml-20 lg:static bottom-3 right-2 ">
               <div
                 className="flex items-center gap-2 cursor-pointer"
@@ -130,19 +134,20 @@ const UserReply = ({ reply, commentId, replyId2, reply2 }) => {
                   <path
                     d="M1.167 12.448c0 .854.7 1.552 1.555 1.552h6.222c.856 0 1.556-.698 1.556-1.552V3.5H1.167v8.948Zm10.5-11.281H8.75L7.773 0h-3.88l-.976 1.167H0v1.166h11.667V1.167Z"
                     fill="hsl(358, 79%, 66%)"
-                    className={` ${
+                    className={`${
                       deleteHoverActive && "fill-paleRed"
                     } transition-all duration-300 delay-100`}
                   />
                 </svg>
                 <span
                   className={`${
-                    deleteHoverActive && "text-paleRed"
-                  } text-softRed font-[500]  transition-all duration-300 delay-100`}
+                    deleteHoverActive ? "text-paleRed" : "text-softRed"
+                  }  font-[500]  transition-all duration-300 delay-100`}
                 >
                   Delete
                 </span>
               </div>
+
               <div
                 className="flex items-center gap-2 cursor-pointer"
                 onClick={() => setShowEdit(true)}
@@ -159,13 +164,14 @@ const UserReply = ({ reply, commentId, replyId2, reply2 }) => {
                   />
                 </svg>
                 <span
-                  className={`${
-                    editHoverActive && "text-lightGrayishBlue"
-                  } text-moderateBlue font-[500]  transition-all duration-300 delay-100`}
+                  className={` ${
+                    editHoverActive ? "text-lightGrayishBlue" : "text-moderateBlue"
+                  }  font-[500]  transition-all duration-300 delay-100`}
                 >
                   Edit
                 </span>
               </div>
+
             </div>
           </div>
           <div className="mb-12 lg:ml-5 text-[13px]">
@@ -186,7 +192,8 @@ const UserReply = ({ reply, commentId, replyId2, reply2 }) => {
                 <br />
                 <button
                   onClick={() =>
-                    setShowEdit(false) & handleEdit(reply.id, commentId, replyId2)
+                    setShowEdit(false) &
+                    handleEdit(reply.id, commentId, replyId2)
                   }
                   className="p-1 w-[80px] absolute lg:right-[61px] right-4 mb-6 text-white rounded-md cursor-pointer bg-moderateBlue hover:bg-lightGrayishBlue"
                 >

@@ -51,8 +51,8 @@ const Comments = () => {
                 </svg>
                 <span
                   className={`${
-                    hoverActive && "text-lightGrayishBlue"
-                  } transition-all font-[500] duration-300 delay-100 text-moderateBlue text-[14px]`}
+                    hoverActive ? "text-lightGrayishBlue" : "text-moderateBlue"
+                  } transition-all font-[500] duration-300 delay-100  text-[14px]`}
                 >
                   Reply
                 </span>

@@ -129,8 +129,8 @@ const UserComments = ({ comment, index }) => {
                 </svg>
                 <span
                   className={`${
-                    deleteHoverActive && "text-paleRed"
-                  } text-softRed font-[500]  transition-all duration-300 delay-100`}
+                    deleteHoverActive ? "text-paleRed" : "text-softRed"
+                  }  font-[500]  transition-all duration-300 delay-100`}
                 >
                   Delete
                 </span>
@@ -152,8 +152,8 @@ const UserComments = ({ comment, index }) => {
                 </svg>
                 <span
                   className={`${
-                    editHoverActive && "text-lightGrayishBlue"
-                  } text-moderateBlue font-[500]  transition-all duration-300 delay-100`}
+                    editHoverActive ? "text-lightGrayishBlue" : "text-moderateBlue"
+                  }  font-[500]  transition-all duration-300 delay-100`}
                 >
                   Edit
                 </span>
